@@ -1,0 +1,26 @@
+- hosts: localhost
+  connection: local
+  vars:
+    resource_group_name: FGLAZRGDEVSTORAGE
+    storage_account_name: fglazstgprintingservice
+    location: brazilsouth
+  tasks:
+  - name: Create a resource group for storageaccount
+    azure_rm_resourcegroup:
+      name: "{{ resource_group_name }}"
+      location: "{{ location }}"
+      tags:
+          ProjectName: Ecommerce
+  - name: Create storage account
+    azure_rm_storageaccount:
+      resource_group: "{{ resource_group_name }}"
+      name: "{{ storage_account_name }}"
+      account_type: Standard_LRS
+      location: "{{ location }}"
+  - name: Create storage container
+    azure_rm_storageblob:
+      resource_group: "{{ resource_group_name }}"
+      storage_account_name: "{{ storage_account_name }}"
+      container: "doc-generation-output"
+      public_access: "blob"
+      state: present
